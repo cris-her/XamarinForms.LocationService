@@ -1,4 +1,8 @@
-﻿using Xamarin.Essentials;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using XamarinForms.LocationService.Messages;
 using XamarinForms.LocationService.Utils;
@@ -14,6 +18,17 @@ namespace XamarinForms.LocationService.ViewModels
         public bool startEnabled;
         public bool stopEnabled;
         #endregion vars
+
+        private ObservableCollection<MyClass> myVar;
+
+        public ObservableCollection<MyClass> MyProperty
+        {
+                    
+                get => myVar;
+                set => SetProperty(ref myVar, value);
+
+        }
+
 
         #region properties
         public double Latitude
@@ -52,6 +67,7 @@ namespace XamarinForms.LocationService.ViewModels
 
         public MainPageViewModel()
         {
+            MyProperty = new ObservableCollection<MyClass>();
             locationConsent = DependencyService.Get<ILocationConsent>();
             StartCommand = new Command(() => OnStartClick());
             EndCommand = new Command(() => OnStopClick());
@@ -102,6 +118,8 @@ namespace XamarinForms.LocationService.ViewModels
                 Device.BeginInvokeOnMainThread(() => {
                     Latitude = message.Latitude;
                     Longitude = message.Longitude;
+                    Longitude = message.Longitude;
+                    MyProperty.Add(new MyClass(Latitude,Longitude,DateTime.Now));
                     UserMessage = "Location Updated";
                 });
             });
@@ -115,6 +133,58 @@ namespace XamarinForms.LocationService.ViewModels
                     UserMessage = "There was an error updating location!";
                 });
             });
+        }
+
+        public class MyClass : INotifyPropertyChanged
+        {
+            private double lat;
+            private double lon;
+            private DateTime date;
+
+            public MyClass(double lat, double lon, DateTime date)
+            {
+                this.lat = lat;
+                this.lon = lon;
+                this.date = date;
+            }
+
+            public double Lat
+            {
+
+                get { return lat; }
+                set { lat = value; OnPropertyChanged("Lat"); }
+            }
+
+            
+
+            public double Lon
+            {
+                get { return lon; }
+                set { lon = value; OnPropertyChanged("Lon"); }
+            }
+
+            
+
+            public DateTime Date
+            {
+                get { return date; }
+                set { date = value; OnPropertyChanged("Date"); }
+            }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            protected virtual void OnPropertyChanged(string propertyName)
+            {
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this,
+                        new PropertyChangedEventArgs(propertyName));
+                }
+
+
+
+            }
+
         }
     }
 }

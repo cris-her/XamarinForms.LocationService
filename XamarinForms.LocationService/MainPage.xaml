@@ -43,6 +43,21 @@
 
         <Label Text="{Binding UserMessage}" VerticalOptions="CenterAndExpand"/>
 
+        <ListView ItemsSource="{Binding MyProperty}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout  Orientation="Horizontal">
+                            <Label Text="{Binding Lat}" />
+                            <Label Text="{Binding Lon}" />
+                            <Label Text="{Binding Date, StringFormat='{}{0:hh\\:mm}'}" />
+                        </StackLayout>
+
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
     </StackLayout>
 
 </ContentPage>
